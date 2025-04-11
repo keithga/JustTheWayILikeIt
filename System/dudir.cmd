@@ -1,0 +1,1 @@
+@du.exe -l 1 -q -accepteula %*

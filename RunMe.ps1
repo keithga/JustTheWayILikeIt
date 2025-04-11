@@ -30,10 +30,9 @@ iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocola
 choco.exe install 7zip adobereader GoogleChrome notepadplusplus speccy vlc sysinternals -y --ignore-checksums
 choco.exe install DotNet4.5 dotnet-6.0-desktopruntime vcredist140 vcredist2015 -y --ignore-checksums
 
-choco install microsoft-office-deployment --params="'/64bit /Product:O365ProPlusRetail'"
-
-
 if ( $role -eq 'dev' ) { 
+    choco install microsoft-office-deployment --params="'/64bit /Product:O365ProPlusRetail'"
+
     choco.exe install  streamdeck 1password op yubico-authenticator yubikey-manager gimp -y powershell-core rufus signal zoom rsat --ignore-checksums
     choco.exe install  git github-desktop python ilspy wireshark vscode vscode-codespellchecker vscode-powershell windows-adk-deploy windows-adk-winpe MDT  -y --ignore-checksums
 }
@@ -42,8 +41,7 @@ if ( $role -eq 'dev' ) {
 
 #region Install other Applications
 
-
-
+copy-item -Path "$PSScriptRoot\*" -Destination "c:\windows" -ErrorAction continue
 
 #endregion
 
