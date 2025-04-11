@@ -27,16 +27,23 @@ Set-ExecutionPolicy Bypass -Scope Process -Force;
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; 
 iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
-choco.exe install  7zip adobereader GoogleChrome notepadplusplus powershell-core rufus signal speccy vlc sysinternals zoom rsat gimp -y --ignore-checksums
+choco.exe install 7zip adobereader GoogleChrome notepadplusplus speccy vlc sysinternals -y --ignore-checksums
+choco.exe install DotNet4.5 dotnet-6.0-desktopruntime vcredist140 vcredist2015 -y --ignore-checksums
+
+choco install microsoft-office-deployment --params="'/64bit /Product:O365ProPlusRetail'"
+
 
 if ( $role -eq 'dev' ) { 
-    choco.exe install  streamdeck 1password op yubico-authenticator yubikey-manager  -y --ignore-checksums
-    choco.exe install  git github-desktop python ilspy wireshark DotNet4.5 dotnet-6.0-desktopruntime vcredist140 vcredist2015 vscode vscode-codespellchecker vscode-powershell windows-adk-deploy windows-adk-winpe MDT  -y --ignore-checksums
+    choco.exe install  streamdeck 1password op yubico-authenticator yubikey-manager gimp -y powershell-core rufus signal zoom rsat --ignore-checksums
+    choco.exe install  git github-desktop python ilspy wireshark vscode vscode-codespellchecker vscode-powershell windows-adk-deploy windows-adk-winpe MDT  -y --ignore-checksums
 }
 
 #endregion
 
-#region Install Files?!?!
+#region Install other Applications
+
+
+
 
 #endregion
 
@@ -67,9 +74,7 @@ reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Reliability" /v Shutdow
 reg.exe add "HKLM\SOFTWARE\Microsoft\ServerManager" /v DoNotPopWACConsoleAtSMLaunch /t REG_DWORD /d 0x00000001 /f
 reg add "hklm\Software\Policies\Microsoft\Internet Explorer\Main" /v DisableFirstRunCustomize /t REG_DWORD /d 0x00000001 /f
 
-netsh.exe advfirewall firewall set rule name="File and Printer Sharing (SMB-In)" dir=in profile=any new enable=yes
-
-# Get-Disk | Where-Object operationalstatus -ne Online | set-Disk -IsOffline $False
+# netsh.exe advfirewall firewall set rule name="File and Printer Sharing (SMB-In)" dir=in profile=any new enable=yes
 
 #endregion
 
@@ -146,12 +151,6 @@ if (gwmi Win32_ComputerSystem | ? PartOfDomain -ne'True') {
 
 }
 
-################################################################################
-
-
-
-
-
 #endregion
 
 #endregion
@@ -168,58 +167,5 @@ attrib.exe +h c:\PerfLogs
 attrib.exe +h c:\Intel
 
 #endregion 
-
-#endregion
-
-#######################################################
-
-return
-
-#region Future
-
-#region HKCU - How to deal with this
-
-set-ItemProperty -Path 'HKCU:\Environment'-name "CopyCmd" -Value "/Y"
-
-set-ItemProperty -Path 'HKCU:\Console'-name "HistoryBufferSize" -Value 0x00000100
-set-ItemProperty -Path 'HKCU:\Console'-name "ScreenBufferSize" -Value 0x270f0096
-set-ItemProperty -Path 'HKCU:\Console'-name "WindowSize" -Value 0x00500096
-set-ItemProperty -Path 'HKCU:\Console'-name "QuickEdit" -Value 0x00000001
-
-reg add "HKCU\Software\Microsoft\Office\15.0\OneNote\Options\Other" /v PageTabsOnLeft /t REG_DWORD /d 0x00000001 /f
-reg add "HKCU\Software\Microsoft\Office\15.0\OneNote\Options\Other" /v RunSystemTrayApp /t REG_DWORD /d 0x00000000 /f
-
-#Hide Protected Operating System Files - 1 = unchecked
-reg add "hkcu\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v ShowSuperHidden /t REG_DWORD /d 1 /f
-
-#Hidden Files and Folders - 1 = Show 2= Do not show
-reg add "hkcu\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v Hidden /t REG_DWORD /d 1 /f
-
-#Hide File Extensions for known file types - 0 = unchecked
-reg add "hkcu\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v HideFileExt /t REG_DWORD /d 0 /f
-
-#Disable Automatically Hide Inactive Tray icons
-reg add "hkcu\Software\Microsoft\Windows\CurrentVersion\Explorer" /v EnableAutoTray /t REG_DWORD /d 0x00000000 /f
-
-#endregion 
-
-@"
-
-Remaining Tasks for this machine:
-
-Remaining Manual Steps:
-* Open Outlook and connect to Hotmail and Activate Office 365
-* Pin to TaskBar: Cmd.exe/outlook/OneNote
-
-Configuration Wish List
-* New method to place _Files in path within local profile and adjust Path???
-* Visual Studio 2017 Configuration
-* Add Windows UPdate to the configuration
-* Add Google to default Searches
-* Change Home printer to Duplex
-* Change program Defaults for VS/Pictures/Documents/Videos
-* Enable FIle History??
-
-"@ 
 
 #endregion
