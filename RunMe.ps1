@@ -27,8 +27,12 @@ Set-ExecutionPolicy Bypass -Scope Process -Force;
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; 
 iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
-choco.exe install 7zip adobereader GoogleChrome notepadplusplus speccy vlc sysinternals -y --ignore-checksums
-choco.exe install DotNet4.5 dotnet-6.0-desktopruntime vcredist140 vcredist2015 -y --ignore-checksums
+choco.exe GoogleChrome -y --ignore-checksums
+
+if ( $role -ne 'none') {
+    choco.exe install 7zip adobereader  notepadplusplus speccy vlc sysinternals -y --ignore-checksums
+    choco.exe install DotNet4.5 dotnet-6.0-desktopruntime vcredist140 vcredist2015 -y --ignore-checksums
+}
 
 if ( $role -eq 'dev' ) { 
     choco install microsoft-office-deployment --params="'/64bit /Product:O365ProPlusRetail'"
