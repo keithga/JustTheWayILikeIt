@@ -27,7 +27,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force;
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; 
 iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
-choco.exe GoogleChrome -y --ignore-checksums
+choco.exe install GoogleChrome -y --ignore-checksums
 
 if ( $role -ne 'none') {
     choco.exe install 7zip adobereader  notepadplusplus speccy vlc sysinternals -y --ignore-checksums
@@ -55,11 +55,13 @@ copy-item -Path "$PSScriptRoot\*" -Destination "c:\windows" -ErrorAction continu
 
 #region Group Policy
 
-if ( gwmi win32_computersystem | Where-Object PartOfDomain -eq $True ) {
-    write-host "Update Group Policy [1/2] (may take several minutes)..."
-    gpupdate /force | out-string | write-verbose
-    write-host "Update Group Policy [2/2] (may take several minutes)..."
-    gpupdate /force | out-string | write-verbose
+if ( $role -ne 'none') {
+    if ( gwmi win32_computersystem | Where-Object PartOfDomain -eq $True ) {
+        write-host "Update Group Policy [1/2] (may take several minutes)..."
+        gpupdate /force | out-string | write-verbose
+        write-host "Update Group Policy [2/2] (may take several minutes)..."
+        gpupdate /force | out-string | write-verbose
+    }
 }
 
 #endregion
